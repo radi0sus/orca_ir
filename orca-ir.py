@@ -21,7 +21,7 @@ show_single_gauss = False               #show single gauss functions if True
 show_single_gauss_area = False          #show single gauss functions - area plot if True
 label_rel_pos_y = -15                   #-15 for transmission style, 5 for absortion style 
 save_spectrum = True                    #save spectrum if True
-show_spectrum = True                    #show the matplotlib window if True
+show_spectrum = False                   #show the matplotlib window if True
 label_peaks = True                      #show peak labels if True
 minor_ticks = True                      #show minor ticks if True
 spectrum_title = "IR spectrum"          #title
@@ -45,9 +45,16 @@ def gauss(a,m,x,w):
 
 # parse arguments
 parser = argparse.ArgumentParser(prog='orca_ir', description='Easily plot IR spectra from orca.out')
+
 parser.add_argument("filename", help="the ORCA output file")
+
+parser.add_argument('-w','--window',
+    default=0, action='store_true',
+    help='show the plot window')
+
 args = parser.parse_args()
 
+show_spectrum=args.window
 
 #open a file
 #check existence
