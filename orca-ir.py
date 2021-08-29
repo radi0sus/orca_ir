@@ -1,4 +1,7 @@
-import sys                              #os files processing
+# -*- coding: utf-8 -*-
+
+import sys                              #sys files processing
+import os                               #os file processing
 import re                               #regular expresions
 import numpy as np                      #summation
 import matplotlib.pyplot as plt         #plots
@@ -13,6 +16,7 @@ w = 15                              #w = line width, FWHM
 wn_add = 250                        #add +250 to spectra x (required for convolution)
 high_to_low_wn = True               #go from high to low wavenumber, normal for IR spectra, low wn to high wn if False
 transm_style = True                 #show spectra in transmition style, normal for IR spectra, absorption style if False
+show_grid = True                    #show grid
 show_single_gauss = False           #show single gauss functions
 show_single_gauss_area = False      #show single gauss functions - area plot
 label_rel_pos_y = -15               #-15 for transmission style, 5 for absortion style 
@@ -52,7 +56,8 @@ try:
                         break
                     #only recognize lines that start with number
                     #split line into 3 lists mode, frequencies, intensities
-                    if re.search("\d:",line):
+                    #line should start with a number
+                    if re.search("\d:",line): 
                         modelist.append(int(line.strip().split(":")[0])) 
                         freqlist.append(float(line.strip().split()[1]))
                         intenslist.append(float(line.strip().split()[2]))
@@ -91,7 +96,7 @@ plt_range_gauss_sum_y = np.sum(gauss_sum,axis=0)
 peaks , _ = find_peaks(plt_range_gauss_sum_y, height = 0.5)
 
 #plot spectra
-ax.plot(plt_range_x,plt_range_gauss_sum_y,color="black")
+ax.plot(plt_range_x,plt_range_gauss_sum_y,color="black",linewidth=0.8)
 #plot sticks
 ax.stem(freqlist,intenslist,"dimgrey",markerfmt=" ",basefmt=" ")
 #optional mark peaks - uncomment in case
@@ -105,10 +110,11 @@ for index, txt in enumerate(peaks):
     ax.annotate(peaks[index],xy=(peaks[index],plt_range_gauss_sum_y[peaks[index]]),ha="center",rotation=90,size=6,
         xytext=(0,label_rel_pos_y), textcoords='offset points')
     
-ax.set_xlabel(r'$\tilde{\nu}$ in cm$^{-1}$')    #label x axis
+ax.set_xlabel(r'$\tilde{\nu}$ /cm$^{-1}$')    #label x axis
 ax.set_ylabel('Intensity')                      #label y axis
-ax.set_title('IR Spectrum')                     #title
+ax.set_title('IR spectrum')                     #title
 ax.get_yaxis().set_ticks([])                    #remove ticks from y axis
+
 
 #x,y axis manipulation
 if transm_style:
@@ -122,14 +128,18 @@ else:
     plt.xlim(0,max(plt_range_x))
     
 #plt.xlim(max(plt_range_x),0)
-#ax.grid(True)
-#plt.savefig("sample.png", dpi=300)
+if show_grid:
+    ax.grid(True,which='major', axis='x',color='black',linestyle='dotted', linewidth=0.5)
+
 
 #increase figure size N times
 N = 1.5
 params = plt.gcf()
 plSize = params.get_size_inches()
 params.set_size_inches((plSize[0]*N, plSize[1]*N))
+
+filename, file_extension = os.path.splitext(args.filename)
+#plt.savefig(f"{filename}-ir.png", dpi=300)
 
 #show the plot
 plt.show()
