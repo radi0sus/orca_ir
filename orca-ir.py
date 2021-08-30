@@ -11,29 +11,39 @@ from scipy.signal import find_peaks     #peak detection
 found_ir_section=False                  #check for IR data in out
 specstring_start='IR SPECTRUM'          #check orca.out from here
 specstring_end='The first'              #stop reading orca.out from here
-w = 15                                  #w = line width, FWHM
+w = 15                                  #w = line width for broadening, FWHM
 wn_add = 250                            #add +250 to spectra x (required for convolution)
-# plot config section
+
+# plot config section - configure here
 high_to_low_wn = True                   #go from high to low wavenumber, normal for IR spectra, low wn to high wn if False
-transm_style = True                     #show spectra in transmition style, normal for IR spectra, absorption style if False
+transm_style = True                     #show spectra in transmittance style, absorption style if False
 show_grid = True                        #show grid if True
+show_conv_spectrum = True               #show the convoluted spectra if True (if False peak labels will not shown)
+show_sticks = True                      #show the stick spectra if True
 show_single_gauss = False               #show single gauss functions if True
 show_single_gauss_area = False          #show single gauss functions - area plot if True
-label_rel_pos_y = -15                   #-15 for transmission style, 5 for absortion style 
+label_rel_pos_y = -15                   #-15 for transmittance style, 5 for absortion style 
 save_spectrum = True                    #save spectrum if True
 show_spectrum = False                   #show the matplotlib window if True
 label_peaks = True                      #show peak labels if True
 minor_ticks = True                      #show minor ticks if True
 spectrum_title = "IR spectrum"          #title
 spectrum_title_weight = "bold"          #weight of the title font: 'normal' | 'bold' | 'heavy' | 'light' | 'ultrabold' | 'ultralight'
-y_label = "Intensity"                   #label of the y axis
+y_label_trans = "rel. transmittance"    #label of the y axis - Transmittance
+y_label_abs = "rel. intensity"          #label of y axis - Absorption
 x_label = r'$\tilde{\nu}$ /cm$^{-1}$'   #label of the x axis
+figure_dpi = 300                        #DPI of the picture
 
 #global lists
 modelist=list()         #mode
 freqlist=list()         #frequency
 intenslist=list()       #intensity absolute
 gauss_sum=list()        #list for to sum of single gaussian spectra = the convoluted spectra
+
+
+def roundup(x):
+    #round to next 100
+    return x if x % 100 == 0 else x + 100 - x % 100
 
 def gauss(a,m,x,w):
     # calculation of the Gaussian line shape
@@ -46,15 +56,39 @@ def gauss(a,m,x,w):
 # parse arguments
 parser = argparse.ArgumentParser(prog='orca_ir', description='Easily plot IR spectra from orca.out')
 
+#filename is required
 parser.add_argument("filename", help="the ORCA output file")
 
-parser.add_argument('-w','--window',
+#show the matplotlib window
+parser.add_argument('-s','--show',
     default=0, action='store_true',
     help='show the plot window')
 
+#do not save the png file of the spectra
+parser.add_argument('-n','--nosave',
+    default=1, action='store_false',
+    help='do not save the spectra')
+
+#change line with (integer) for line broadening, default is 15
+parser.add_argument('-w','--linewidth',
+    type=int,
+    default=15,
+    help='line width for broadening')
+
+#pare arguments
 args = parser.parse_args()
 
-show_spectrum=args.window
+#change values according to arguments
+show_spectrum = args.show
+save_spectrum = args.nosave   
+
+#check if w is between 1 and 100, else reset to 15
+if 1<= args.linewidth <= 100:
+    w = args.linewidth
+else:
+    print("warning! line width exceeds range, reset to 15")
+    w = 15
+
 
 #open a file
 #check existence
@@ -97,10 +131,10 @@ plt_range_x=np.arange(0,max(freqlist)+wn_add,1)
 for index, freq in enumerate(freqlist):
     #single gauss function line plot
     if show_single_gauss:
-        ax.plot(plt_range_x,gauss(intenslist[index], plt_range_x, freq, w),color="black",alpha=0.5) 
+        ax.plot(plt_range_x,gauss(intenslist[index], plt_range_x, freq, w),color="grey",alpha=0.5) 
     #single gauss function filled plot
     if show_single_gauss_area:
-        ax.fill_between(plt_range_x,gauss(intenslist[index], plt_range_x, freq, w), color="grey",alpha=0.3)
+        ax.fill_between(plt_range_x,gauss(intenslist[index], plt_range_x, freq, w),color="grey",alpha=0.5)
     # sum of gauss functions
     gauss_sum.append(gauss(intenslist[index], plt_range_x, freq, w))
 
@@ -111,41 +145,63 @@ plt_range_gauss_sum_y = np.sum(gauss_sum,axis=0)
 peaks , _ = find_peaks(plt_range_gauss_sum_y, height = 0.5)
 
 #plot spectra
-ax.plot(plt_range_x,plt_range_gauss_sum_y,color="black",linewidth=0.8)
+if show_conv_spectrum:
+    ax.plot(plt_range_x,plt_range_gauss_sum_y,color="black",linewidth=0.8)
+
 #plot sticks
-ax.stem(freqlist,intenslist,"dimgrey",markerfmt=" ",basefmt=" ")
+if show_sticks:
+    ax.stem(freqlist,intenslist,"dimgrey",markerfmt=" ",basefmt=" ")
+
 #optional mark peaks - uncomment in case
 #ax.plot(peaks,plt_range_gauss_sum_y[peaks],"|")
 
 #label peaks
-if label_peaks:
-    if not transm_style:
-        label_rel_pos_y=5   #in case of absorption style spectra
-        
-    for index, txt in enumerate(peaks):
-        ax.annotate(peaks[index],xy=(peaks[index],plt_range_gauss_sum_y[peaks[index]]),ha="center",rotation=90,size=6,
-            xytext=(0,label_rel_pos_y), textcoords='offset points')
+#show peak labels only if the convoluted spectrum is shown (first if)
+if show_conv_spectrum:  
+    if label_peaks:
+        if not transm_style:
+            label_rel_pos_y=5   #in case of absorption style spectra
+            
+        for index, txt in enumerate(peaks):
+            
+            if transm_style:
+                #corr_factor - maintain distance from label to peak in trasmission style
+                #sensitive to peak label font size
+                corr_factor = (4-len(str(peaks[index])))*3.75
+                #if one does not care:
+                #corr_factor = 0 
+            else:
+                # not necessary for absorption style
+                corr_factor = 0
+                
+            ax.annotate(peaks[index],xy=(peaks[index],plt_range_gauss_sum_y[peaks[index]]),ha="center",rotation=90,size=6,
+                xytext=(0,label_rel_pos_y+corr_factor), textcoords='offset points')
     
 ax.set_xlabel(x_label)                                          #label x axis
-ax.set_ylabel(y_label)                                          #label y axis
+
+if transm_style:
+    ax.set_ylabel(y_label_trans)                                #label y axis
+else:
+    ax.set_ylabel(y_label_abs)
+    
 ax.set_title(spectrum_title,fontweight=spectrum_title_weight)   #title
 ax.get_yaxis().set_ticks([])                                    #remove ticks from y axis
 plt.tight_layout()                                              #tight layout
 if minor_ticks:
     ax.minorticks_on()                                          #show minor ticks
 
-#x,y axis manipulation
+#x,y axis manipulation for transmittance or absorption style 
 if transm_style:
     plt.ylim(max(plt_range_gauss_sum_y)+max(plt_range_gauss_sum_y)*0.1,0) # +10% for labels
 else:
     plt.ylim(0,max(plt_range_gauss_sum_y)+max(plt_range_gauss_sum_y)*0.1) # +10% for labels
     
 if high_to_low_wn:
-    plt.xlim(max(plt_range_x),0)
+    plt.xlim(roundup(max(plt_range_x)),0) # round to next 100
 else:
-    plt.xlim(0,max(plt_range_x))
+    plt.xlim(0,roundup(max(plt_range_x)))
     
-#plt.xlim(max(plt_range_x),0)
+#show grid
 if show_grid:
     ax.grid(True,which='major', axis='x',color='black',linestyle='dotted', linewidth=0.5)
 
@@ -159,8 +215,8 @@ params.set_size_inches((plSize[0]*N, plSize[1]*N))
 #save the plot
 if save_spectrum:
     filename, file_extension = os.path.splitext(args.filename)
-    plt.savefig(f"{filename}-ir.png", dpi=300)
-
+    plt.savefig(f"{filename}-ir.png", dpi=figure_dpi)
+    
 #show the plot
 if show_spectrum:
     plt.show()
