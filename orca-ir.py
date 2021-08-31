@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys                              #sys files processing
 import os                               #os file processing
-import re                               #regular expresions
+import re                               #regular expressions
 import numpy as np                      #summation
 import matplotlib.pyplot as plt         #plots
 import argparse                         #argument parser
@@ -12,33 +12,34 @@ found_ir_section=False                  #check for IR data in out
 specstring_start='IR SPECTRUM'          #check orca.out from here
 specstring_end='The first'              #stop reading orca.out from here
 w = 15                                  #w = line width for broadening, FWHM
-wn_add = 250                            #add +250 to spectra x (required for convolution)
+wn_add = 150                            #add +150 to spectra x (required for convolution)
 
 # plot config section - configure here
-high_to_low_wn = True                   #go from high to low wavenumber, normal for IR spectra, low wn to high wn if False
+high_to_low_wn = True                   #go from high to low wave number, normal for IR spectra, low wn to high wn if False
 transm_style = True                     #show spectra in transmittance style, absorption style if False
 show_grid = True                        #show grid if True
-show_conv_spectrum = True               #show the convoluted spectra if True (if False peak labels will not shown)
+show_conv_spectrum = True               #show the convoluted spectra if True (if False peak labels will not be shown)
 show_sticks = True                      #show the stick spectra if True
 show_single_gauss = False               #show single gauss functions if True
 show_single_gauss_area = False          #show single gauss functions - area plot if True
-label_rel_pos_y = -15                   #-15 for transmittance style, 5 for absortion style 
+label_rel_pos_y = -15                   #-15 for transmittance style, 5 for absorption style 
 save_spectrum = True                    #save spectrum if True
 show_spectrum = False                   #show the matplotlib window if True
 label_peaks = True                      #show peak labels if True
 minor_ticks = True                      #show minor ticks if True
+linear_locator = True                   #tick locations at the beginning and end of the spectrum x-axis, evenly spaced
 spectrum_title = "IR spectrum"          #title
 spectrum_title_weight = "bold"          #weight of the title font: 'normal' | 'bold' | 'heavy' | 'light' | 'ultrabold' | 'ultralight'
-y_label_trans = "rel. transmittance"    #label of the y axis - Transmittance
-y_label_abs = "rel. intensity"          #label of y axis - Absorption
-x_label = r'$\tilde{\nu}$ /cm$^{-1}$'   #label of the x axis
+y_label_trans = "transmittance"         #label of the y axis - Transmittance
+y_label_abs = "intensity"               #label of y-axis - Absorption
+x_label = r'$\tilde{\nu}$ /cm$^{-1}$'   #label of the x-axis
 figure_dpi = 300                        #DPI of the picture
 
 #global lists
 modelist=list()         #mode
 freqlist=list()         #frequency
 intenslist=list()       #intensity absolute
-gauss_sum=list()        #list for to sum of single gaussian spectra = the convoluted spectra
+gauss_sum=list()        #list for the sum of single gaussian spectra = the convoluted spectrum
 
 
 def roundup(x):
@@ -49,7 +50,7 @@ def gauss(a,m,x,w):
     # calculation of the Gaussian line shape
     # a = amplitude (max y, intensity)
     # x = position
-    # m = maximum/meadian (stick position in x, wavenumber)
+    # m = maximum/meadian (stick position in x, wave number)
     # w = line width, FWHM
     return a*np.exp(-(np.log(2)*((m-x)/w)**2))
 
@@ -165,7 +166,7 @@ if show_conv_spectrum:
         for index, txt in enumerate(peaks):
             
             if transm_style:
-                #corr_factor - maintain distance from label to peak in trasmission style
+                #corr_factor - maintain distance from label to peak in transmittance style
                 #sensitive to peak label font size
                 corr_factor = (4-len(str(peaks[index])))*3.75
                 #if one does not care:
@@ -200,7 +201,11 @@ if high_to_low_wn:
     plt.xlim(roundup(max(plt_range_x)),0) # round to next 100
 else:
     plt.xlim(0,roundup(max(plt_range_x)))
-    
+
+#tick locations at the beginning and end of the spectrum x-axis, evenly spaced
+if linear_locator:
+    ax.xaxis.set_major_locator(plt.LinearLocator())
+
 #show grid
 if show_grid:
     ax.grid(True,which='major', axis='x',color='black',linestyle='dotted', linewidth=0.5)
@@ -216,7 +221,7 @@ params.set_size_inches((plSize[0]*N, plSize[1]*N))
 if save_spectrum:
     filename, file_extension = os.path.splitext(args.filename)
     plt.savefig(f"{filename}-ir.png", dpi=figure_dpi)
-    
+
 #show the plot
 if show_spectrum:
     plt.show()
