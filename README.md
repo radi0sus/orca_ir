@@ -39,5 +39,6 @@ The PNG file will be replaced everytime you start the script with the same outpu
 If you want to keep a file, you have to rename it. 
 
 ## Examples:
-![](/examples/example1.png)
-![](/examples/example2.png)
+![Example 1](/examples/example1.png)
+![Example 2](/examples/example2.png)
+![Example 3](/examples/example3.png)
