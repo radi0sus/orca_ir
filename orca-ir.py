@@ -1,4 +1,41 @@
 # -*- coding: utf-8 -*-
+'''
+Python 3 script for (hassle-free) plotting IR spectra from ORCA output files. 
+It combines the stick spectrum with the convoluted spectrum (gaussian line shape). The full spectrum or parts of the spectrum (via matplotlib window) can be plotted.
+
+## External Modules
+ `re`, `numpy`, `matplotlib`, `scipy`  
+
+## Quick start
+ Start the script with:
+`python3 orca-ir.py filename`
+it will save a plot as PNG bitmap:
+`filename-ir.png`
+
+
+## Command-line options
+
+- `filename` required: filename
+- `-w` optional: line width of the gaussian (default is 15)
+- `-s` optional: shows the `matplotlib` window
+- `-n` optional: do not save the spectrum
+
+## Script options
+There are numerous ways to configure the spectrum in the script:
+Check `# plot config section - configure here` in the script. 
+Here, you can configure an absorption or transmittance plot. You can even plot the single gaussian functions.
+
+## Code options
+Colors, line thickness, line styles, level pf peak detection and more can be changed in the code directly.
+
+## Special options and limitations
+The spectrum always starts at zero and ends at the maximum wave number. If you need only a part of the spectrum, you can start the script with:
+`python3 orca-ir.py filename -s`
+and use the matplotlib window to zoom to an area of interest and save it.
+
+The PNG file will be replaced everytime you start the script with the same output file. If you want to keep a file, you have to rename it. 
+'''
+
 import sys                              #sys files processing
 import os                               #os file processing
 import re                               #regular expressions
@@ -97,6 +134,11 @@ try:
     with open(args.filename, "r") as input_file:
         for line in input_file:
             #start exctract text 
+            if "Program Version 5" in line:
+                #thanks to the orca prgrmrs intensity now in a different column
+                intens_column=3
+            if "Program Version 4" in line:
+                intens_column=2
             if line.startswith(specstring_start):
                 #found IR data in orca.out
                 found_ir_section=True
@@ -110,7 +152,7 @@ try:
                     if re.search("\d:",line): 
                         modelist.append(int(line.strip().split(":")[0])) 
                         freqlist.append(float(line.strip().split()[1]))
-                        intenslist.append(float(line.strip().split()[2]))
+                        intenslist.append(float(line.strip().split()[intens_column]))
 #file not found -> exit here
 except IOError:
     print(f"'{args.filename}'" + " not found")
@@ -143,7 +185,7 @@ for index, freq in enumerate(freqlist):
 plt_range_gauss_sum_y = np.sum(gauss_sum,axis=0)
 
 #find peaks scipy function, change height for level of detection
-peaks , _ = find_peaks(plt_range_gauss_sum_y, height = 0.5)
+peaks , _ = find_peaks(plt_range_gauss_sum_y, height = 0.1)
 
 #plot spectra
 if show_conv_spectrum:
