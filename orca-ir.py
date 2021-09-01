@@ -148,7 +148,7 @@ try:
         for line in input_file:
             #start exctract text 
             if "Program Version 5" in line:
-                #thanks to the orca prgrmrs intensity now in a different column
+                #thanks to the orca prgrmrs intensity is now in a different column
                 intens_column=3
             if "Program Version 4" in line:
                 intens_column=2
