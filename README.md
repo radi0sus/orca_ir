@@ -9,7 +9,6 @@ The full spectrum or parts of the spectrum (via matplotlib window) can be plotte
 ## Quick start
  Start the script with:
 `python3 orca-ir.py filename`
-
 it will save a plot as PNG bitmap:
 `filename-ir.png`
 
@@ -23,7 +22,6 @@ it will save a plot as PNG bitmap:
 ## Script options
 There are numerous ways to configure the spectrum in the script:
 Check `# plot config section - configure here` in the script. 
-
 Here, you can configure an absorption or transmittance plot. 
 You can even plot the single gaussian functions.
 
