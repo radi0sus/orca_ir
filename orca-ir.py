@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 '''
+
 # orca-ir
-Python 3 script for (hassle-free) plotting IR spectra from ORCA output files. 
+Python 3 script for (hassle-free) plotting IR spectra from ORCA output files with 
+peak dectection and annotation.
 It combines the stick spectrum with the convoluted spectrum (gaussian line shape). 
 The full spectrum or parts of the spectrum (via matplotlib window) can be plotted.
 
-## External Modules
+## External modules
  `re`, `numpy`, `matplotlib`, `scipy`  
 
 ## Quick start
  Start the script with:
 `python3 orca-ir.py filename`
-it will save a plot as PNG bitmap:
+it will save the plot as PNG bitmap:
 `filename-ir.png`
 
 
@@ -38,7 +40,13 @@ If you need only a part of the spectrum, you can start the script with:
 and use the matplotlib window to zoom to an area of interest and save it.
 
 The PNG file will be replaced everytime you start the script with the same output file. 
-If you want to keep a file, you have to rename it. 
+If you want to keep the file, you have to rename it. 
+
+## Examples:
+![Example 1](/examples/example1.png)
+![Example 2](/examples/example2.png)
+![Example 3](/examples/example3.png)
+
 '''
 
 import sys                              #sys files processing
@@ -57,13 +65,13 @@ w = 15                                  #w = line width for broadening, FWHM
 wn_add = 150                            #add +150 to spectra x (required for convolution)
 
 # plot config section - configure here
-high_to_low_wn = True                   #go from high to low wave number, normal for IR spectra, low wn to high wn if False
-transm_style = True                     #show spectra in transmittance style, absorption style if False
-show_grid = True                        #show grid if True
+high_to_low_wn = True                  #go from high to low wave number, normal for IR spectra, low wn to high wn if False
+transm_style = True                   #show spectra in transmittance style, absorption style if False
+show_grid = True                       #show grid if True
 show_conv_spectrum = True               #show the convoluted spectra if True (if False peak labels will not be shown)
 show_sticks = True                      #show the stick spectra if True
-show_single_gauss = False               #show single gauss functions if True
-show_single_gauss_area = False          #show single gauss functions - area plot if True
+show_single_gauss = True               #show single gauss functions if True
+show_single_gauss_area = True          #show single gauss functions - area plot if True
 label_rel_pos_y = -15                   #-15 for transmittance style, 5 for absorption style 
 save_spectrum = True                    #save spectrum if True
 show_spectrum = False                   #show the matplotlib window if True
@@ -143,6 +151,8 @@ try:
                 #thanks to the orca prgrmrs intensity now in a different column
                 intens_column=3
             if "Program Version 4" in line:
+                intens_column=2
+            if "Program Version 3" in line:
                 intens_column=2
             if line.startswith(specstring_start):
                 #found IR data in orca.out
