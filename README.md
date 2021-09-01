@@ -1,5 +1,6 @@
 # orca-ir
-Python 3 script for (hassle-free) plotting IR spectra from ORCA output files. 
+Python 3 script for (hassle-free) plotting IR spectra from ORCA output files with 
+peak dectection and annotation.
 It combines the stick spectrum with the convoluted spectrum (gaussian line shape). 
 The full spectrum or parts of the spectrum (via matplotlib window) can be plotted.
 
@@ -9,7 +10,7 @@ The full spectrum or parts of the spectrum (via matplotlib window) can be plotte
 ## Quick start
  Start the script with:
 `python3 orca-ir.py filename`
-it will save a plot as PNG bitmap:
+it will save the plot as PNG bitmap:
 `filename-ir.png`
 
 
@@ -36,7 +37,7 @@ If you need only a part of the spectrum, you can start the script with:
 and use the matplotlib window to zoom to an area of interest and save it.
 
 The PNG file will be replaced everytime you start the script with the same output file. 
-If you want to keep a file, you have to rename it. 
+If you want to keep the file, you have to rename it. 
 
 ## Examples:
 ![Example 1](/examples/example1.png)
