@@ -4,7 +4,7 @@ peak dectection and annotation.
 It combines the stick spectrum with the convoluted spectrum (gaussian line shape). 
 The full spectrum or parts of the spectrum (via matplotlib window) can be plotted.
 
-## External Modules
+## External modules
  `re`, `numpy`, `matplotlib`, `scipy`  
 
 ## Quick start
