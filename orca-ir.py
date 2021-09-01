@@ -65,13 +65,13 @@ w = 15                                  #w = line width for broadening, FWHM
 wn_add = 150                            #add +150 to spectra x (required for convolution)
 
 # plot config section - configure here
-high_to_low_wn = True                  #go from high to low wave number, normal for IR spectra, low wn to high wn if False
-transm_style = True                   #show spectra in transmittance style, absorption style if False
-show_grid = True                       #show grid if True
+high_to_low_wn = True                   #go from high to low wave number, normal for IR spectra, low wn to high wn if False
+transm_style = True                     #show spectra in transmittance style, absorption style if False
+show_grid = True                        #show grid if True
 show_conv_spectrum = True               #show the convoluted spectra if True (if False peak labels will not be shown)
 show_sticks = True                      #show the stick spectra if True
-show_single_gauss = True               #show single gauss functions if True
-show_single_gauss_area = True          #show single gauss functions - area plot if True
+show_single_gauss = True                #show single gauss functions if True
+show_single_gauss_area = True           #show single gauss functions - area plot if True
 label_rel_pos_y = -15                   #-15 for transmittance style, 5 for absorption style 
 save_spectrum = True                    #save spectrum if True
 show_spectrum = False                   #show the matplotlib window if True
