@@ -23,11 +23,11 @@ it will save the plot as PNG bitmap:
 ## Script options
 There are numerous ways to configure the spectrum in the script:
 Check `# plot config section - configure here` in the script. 
-Here, you can configure an absorption or transmittance plot. 
+Here, you can configure an absorption or transmittance plot for example.
 You can even plot the single gaussian functions.
 
 ## Code options
-Colors, line thickness, line styles, level peak detection and 
+Colors, line thickness, line styles, level of peak detection and 
 more can be changed in the code directly.
 
 ## Special options and limitations
