@@ -39,3 +39,4 @@ The PNG file will be replaced everytime you start the script with the same outpu
 If you want to keep a file, you have to rename it. 
 
 ## Examples:
+![](./examples/example1.png =250x250)
