@@ -1,5 +1,5 @@
 # orca-ir
-A Python 3 script for (hassle-free) plotting IR spectra from [ORCA](https://orcaforum.kofo.mpg.de) output files with 
+A Python 3 script for (hassle-free) plotting of IR spectra from [ORCA](https://orcaforum.kofo.mpg.de) output files with 
 peak dectection and annotation.
 It combines the stick spectrum with the convoluted spectrum (gaussian line shape). 
 The full spectrum or parts of the spectrum (via matplotlib window) can be plotted.
