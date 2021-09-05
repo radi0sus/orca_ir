@@ -37,7 +37,9 @@ more can be changed in the code directly.
 ## Special options and limitations
 The spectrum always starts at zero and ends at the maximum wave number. 
 If you need only a part of the spectrum, you can start the script with:
-`python3 orca-ir.py filename -s`
+```console
+python3 orca-ir.py filename -s
+```
 and use the matplotlib window to zoom to an area of interest and save it.
 The PNG file will be replaced everytime you start the script with the same output file. 
 If you want to keep the file, you have to rename it. 
