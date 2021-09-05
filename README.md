@@ -12,7 +12,9 @@ The full spectrum or parts of the spectrum (via matplotlib window) can be plotte
  
 ## Quick start
  Start the script with:
-`python3 orca-ir.py filename`
+```console
+python3 orca-ir.py filename
+```
 it will save the plot as PNG bitmap:
 `filename-ir.png`
 
