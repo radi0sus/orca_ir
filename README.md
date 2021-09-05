@@ -20,7 +20,7 @@ it will save the plot as PNG bitmap:
 
 ## Command-line options
 - `filename` , required: filename
-- `-w`  `N` , optional: line width of the gaussian (default is  `N = 15`)
+- `-w`  `N` , optional: line width (in cm<sup>-1</sup>) of the gaussian (default is  `N = 15`)
 - `-s` , optional: shows the `matplotlib` window
 - `-n` , optional: do not save the spectrum
 
