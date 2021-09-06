@@ -34,7 +34,7 @@ You can even configure the script to plot of the single gaussian functions.
 Colors, line thickness, line styles, level of peak detection and 
 more can be changed in the code directly.
 
-## Special options and limitations
+## Remarks
 The spectrum always starts at zero and ends at the maximum wave number. 
 If you need only a part of the spectrum, you can start the script with:
 ```console
