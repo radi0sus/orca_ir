@@ -20,10 +20,10 @@ it will save the plot as PNG bitmap:
 
 ## Command-line options
 - `filename` , required: filename
-- `-e` , optional: export the line spectrum in a csv-like fashion; filename of the export is input filename + "-mod.dat"
 - `-w`  `N` , optional: line width (in cm<sup>-1</sup>) of the gaussian (default is  `N = 15`)
 - `-s` , optional: shows the `matplotlib` window
 - `-n` , optional: do not save the spectrum
+- `-e` , optional: export the line spectrum in a csv-like fashion; filename of the export is input filename + "-mod.dat"
 
 ## Script options
 There are numerous ways to configure the spectrum in the script:
