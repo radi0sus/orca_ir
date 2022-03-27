@@ -20,6 +20,7 @@ it will save the plot as PNG bitmap:
 
 ## Command-line options
 - `filename` , required: filename
+- `-e` , optional: export the line spectrum in a csv-like fashion; filename of the export is input filename + "-mod.dat"
 - `-w`  `N` , optional: line width (in cm<sup>-1</sup>) of the gaussian (default is  `N = 15`)
 - `-s` , optional: shows the `matplotlib` window
 - `-n` , optional: do not save the spectrum
@@ -29,6 +30,8 @@ There are numerous ways to configure the spectrum in the script:
 Check `# plot config section - configure here` in the script. 
 Here, you can configure an absorption or transmittance plot for example.
 You can even configure the script to plot of the single gaussian functions.
+
+The delimiter for the line spectrum export can be changed by changing the value of `export_delim =`.
 
 ## Code options
 Colors, line thickness, line styles, level of peak detection and 
