@@ -19,6 +19,7 @@ specstring_start='IR SPECTRUM'          #check orca.out from here
 specstring_end='The first'              #stop reading orca.out from here
 w = 15                                  #w = line width for broadening, FWHM
 wn_add = 150                            #add +150 to spectra x (required for convolution)
+export_delim = " "                      #delimiter for data export
 
 # plot config section - configure here
 high_to_low_wn = True                   #go from high to low wave number, normal for IR spectra, low wn to high wn if False
@@ -82,12 +83,18 @@ parser.add_argument('-w','--linewidth',
     default=15,
     help='line width for broadening')
 
+#export data for the line spectrum in a csv-like fashion
+parser.add_argument('-e','--export',
+    default=0, action='store_true',
+    help='export data')
+
 #pare arguments
 args = parser.parse_args()
 
 #change values according to arguments
 show_spectrum = args.show
-save_spectrum = args.nosave   
+save_spectrum = args.nosave
+export_spectrum = args.export
 
 #check if w is between 1 and 100, else reset to 15
 if 1<= args.linewidth <= 100:
@@ -164,7 +171,7 @@ if show_conv_spectrum:
 
 #plot sticks
 if show_sticks:
-    ax.stem(freqlist,intenslist,"dimgrey",markerfmt=" ",basefmt=" ")
+    ax.stem(freqlist,intenslist,linefmt="dimgrey",markerfmt=" ",basefmt=" ")
 
 #optional mark peaks - uncomment in case
 #ax.plot(peaks,plt_range_gauss_sum_y[peaks],"|")
@@ -234,6 +241,22 @@ params.set_size_inches((plSize[0]*N, plSize[1]*N))
 if save_spectrum:
     filename, file_extension = os.path.splitext(args.filename)
     plt.savefig(f"{filename}-ir.png", dpi=figure_dpi)
+
+#export data
+if export_spectrum:
+    #get data from plot (window)
+    plotdata = ax.lines[0]
+    xdata = plotdata.get_xdata()
+    ydata = plotdata.get_ydata()
+    #xlimits = plt.gca().get_xlim()
+    try:
+        with open(args.filename + "-mod.dat","w") as output_file:
+            for elements in range(len(xdata)):
+                output_file.write(str(xdata[elements]) + export_delim + str(ydata[elements]) +'\n')
+    #file not found -> exit here
+    except IOError:
+        print("Write error. Exit.")
+        sys.exit(1)
 
 #show the plot
 if show_spectrum:
