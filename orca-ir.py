@@ -248,7 +248,9 @@ if export_spectrum:
     plotdata = ax.lines[0]
     xdata = plotdata.get_xdata()
     ydata = plotdata.get_ydata()
-    #xlimits = plt.gca().get_xlim()
+    if transm_style:
+        #save transmission style spectrum
+        ydata = max(plt_range_gauss_sum_y) - plotdata.get_ydata()
     try:
         with open(args.filename + "-mod.dat","w") as output_file:
             for elements in range(len(xdata)):
