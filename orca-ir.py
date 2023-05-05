@@ -40,6 +40,8 @@ spectrum_title_weight = "bold"          #weight of the title font: 'normal' | 'b
 y_label_trans = "transmittance"         #label of the y axis - Transmittance
 y_label_abs = "intensity"               #label of y-axis - Absorption
 x_label = r'$\tilde{\nu}$ /cm$^{-1}$'   #label of the x-axis
+normalize_export = True                 #normalize y values for export, max y value becomes unity
+normalize_factor = 100                  #factor for normalization, e.g. 100 ranges from 0 to max y = 100 
 figure_dpi = 300                        #DPI of the picture
 
 #global lists
@@ -248,13 +250,22 @@ if export_spectrum:
     plotdata = ax.lines[0]
     xdata = plotdata.get_xdata()
     ydata = plotdata.get_ydata()
+    
+    #if normalize is True
+    if normalize_export:
+        ymax = max(ydata)
+    #do not normalize
+    else:
+        ymax = 1
+        normalize_factor = 1
+        
     if transm_style:
         #save transmission style spectrum
         ydata = max(plt_range_gauss_sum_y) - plotdata.get_ydata()
     try:
         with open(args.filename + "-mod.dat","w") as output_file:
             for elements in range(len(xdata)):
-                output_file.write(str(xdata[elements]) + export_delim + str(ydata[elements]) +'\n')
+                output_file.write(str(xdata[elements]) + export_delim + str(ydata[elements]/ymax*normalize_factor) +'\n')
     #file not found -> exit here
     except IOError:
         print("Write error. Exit.")
