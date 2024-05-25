@@ -4,6 +4,10 @@ peak dectection and annotation.
 It combines the stick spectrum with the convoluted spectrum (gaussian line shape). 
 The full spectrum or parts of the spectrum (via matplotlib window) can be plotted.
 
+Please also have a look at the interactive [Jupyter notebook edition](https://github.com/radi0sus/orca_ir/blob/main/orca-ir.ipynb). 
+It offers almost the same functionality without the need to maintain a local Python installation.
+Please upload an `orca.out` file to the same directory and adjust the code to `ir_data = imp_data('my_orca_calc_with_ir_data.out')`.
+
 ## External modules
  `re` 
  `numpy` 
