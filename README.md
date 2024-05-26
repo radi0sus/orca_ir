@@ -7,8 +7,8 @@ The full spectrum or parts of the spectrum (via matplotlib window) can be plotte
 Please also have a look at the interactive [Jupyter Notebook edition](https://github.com/radi0sus/orca_ir/blob/main/orca-ir.ipynb). 
 It offers almost the same functionality without the need to maintain a local Python installation.
 Please upload an `orca.out` file to the same directory and adjust the code to `ir_data = imp_data('my_orca_calc_with_ir_data.out')`.    
-Note: The interactive Matplotlib windows does not work very well with *colab*. Replace `%matplotlib widget` with `%matplotlib inline` 
-for better performance. However, this change removes the ability to select a specific region and save the spectrum bitmap.
+Note: The interactive Matplotlib window does not work very well with *colab*. Replace `%matplotlib widget` with `%matplotlib inline` 
+for a better performance. However, this change removes the ability to select a specific region and save the spectrum bitmap.
 
  <img src='examples\jn1.png' alt='Jupyter Notebook' width=500 align='center'>   
 
