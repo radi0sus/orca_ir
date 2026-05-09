@@ -1,3 +1,8 @@
+> [!TIP]
+> **Trusty `orca-ir.py` is now available as a web app (thanks to AI)! Enjoy a brand-new interactive interface.**  
+> 👉 Try it here: https://radi0sus.github.io/advanced_orca_ir/  
+> 👉 Dive into the [code](https://github.com/radi0sus/advanced_orca_ir).
+
 # orca-ir
 A Python 3 script for (hassle-free) plotting of IR spectra from [ORCA](https://orcaforum.kofo.mpg.de) output files with 
 peak dectection and annotation.
